@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import Image from "next/image";
-import Excla from "@/app/assets/icons/excla.png";
-import Lock from "@/app/assets/icons/lock.png";
 
 import { useAccount } from "wagmi";
 import { writeContract } from "@wagmi/core";
 import { config } from "../../utils/config";
 import { stakingABI, ABDSABI } from "../../utils/abi";
+import { motion } from "framer-motion";
 
 const Stake = () => {
   const [value, setValue] = useState("0.00");
@@ -49,7 +47,7 @@ const Stake = () => {
     }
   };
 
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = (event: any) => {
     setIsChecked(event.target.checked);
     console.log("Checkbox checked:", event.target.checked);
   };
@@ -72,84 +70,7 @@ const Stake = () => {
             />
           </div>
           {/* boost options */}
-          <div className="mt-[17px] w-full md:mt-6">
-            <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-              Time Boost Option
-            </p>
-            <div className="grid w-full grid-cols-5 gap-1 rounded-[15px] border border-border bg-[#F6F8F7] px-[6px] py-[5px] md:gap-[10px] md:px-[15px] md:py-[7px]">
-              {/* boost option */}
-              <button
-                className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${activeBoost === 0 ? "border border-primary" : ""}`}
-                onClick={() => setActiveBoost(0)}
-              >
-                <p
-                  className={`text-[12px] font-semibold md:text-2xl ${activeBoost == 0 ? "text-primary" : "text-black"}`}
-                >
-                  6
-                </p>
-                <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-                  months
-                </p>
-              </button>
-
-              {/* boost option */}
-              <button
-                className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${activeBoost === 1 ? "border border-primary" : ""}`}
-                onClick={() => setActiveBoost(1)}
-              >
-                <p
-                  className={`text-[12px] font-semibold md:text-2xl ${activeBoost == 1 ? "text-primary" : "text-black"}`}
-                >
-                  9
-                </p>
-                <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-                  months
-                </p>
-              </button>
-              {/* boost option */}
-              <button
-                className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${activeBoost === 2 ? "border border-primary" : ""}`}
-                onClick={() => setActiveBoost(2)}
-              >
-                <p
-                  className={`text-[12px] font-semibold md:text-2xl ${activeBoost == 2 ? "text-primary" : "text-black"}`}
-                >
-                  12
-                </p>
-                <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-                  months
-                </p>
-              </button>
-              {/* boost option */}
-              <button
-                className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${activeBoost === 3 ? "border border-primary" : ""}`}
-                onClick={() => setActiveBoost(3)}
-              >
-                <p
-                  className={`text-[12px] font-semibold md:text-2xl ${activeBoost == 3 ? "text-primary" : "text-black"}`}
-                >
-                  15
-                </p>
-                <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-                  months
-                </p>
-              </button>
-              {/* boost option */}
-              <button
-                className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${activeBoost === 4 ? "border border-primary" : ""}`}
-                onClick={() => setActiveBoost(4)}
-              >
-                <p
-                  className={`text-[12px] font-semibold md:text-2xl ${activeBoost == 4 ? "text-primary" : "text-black"}`}
-                >
-                  18
-                </p>
-                <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
-                  months
-                </p>
-              </button>
-            </div>
-          </div>
+          <BoostOptions />
           <div className="flex w-full items-center justify-between">
             {/* Checkbox with label on the left */}
             <label className="flex items-center space-x-2 text-[8px] font-light text-secondary_light md:text-[13px]">
@@ -215,6 +136,48 @@ const Stake = () => {
         >
           Stake Now
         </button>
+      </div>
+    </div>
+  );
+};
+
+const BoostOptions = () => {
+  const [activeBoost, setActiveBoost] = useState(0);
+
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.2, ease: "easeInOut" } },
+    tap: { scale: 0.95, transition: { duration: 0.1 } },
+  };
+
+  return (
+    <div className="mt-[17px] w-full md:mt-6">
+      <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
+        Time Boost Option
+      </p>
+      <div className="grid w-full grid-cols-5 gap-1 rounded-[15px] border border-border bg-[#F6F8F7] px-[6px] py-[5px] md:gap-[10px] md:px-[15px] md:py-[7px]">
+        {[6, 9, 12, 15, 18].map((month, index) => (
+          <motion.button
+            key={index}
+            onClick={() => setActiveBoost(index)}
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            className={`flex w-full flex-col items-center justify-center rounded-[10px] bg-white p-3 ${
+              activeBoost === index ? "border border-primary" : ""
+            }`}
+          >
+            <p
+              className={`text-[12px] font-semibold md:text-2xl ${
+                activeBoost === index ? "text-primary" : "text-black"
+              }`}
+            >
+              {month}
+            </p>
+            <p className="text-[6px] text-secondary_light sm:text-[10px] md:text-sm">
+              months
+            </p>
+          </motion.button>
+        ))}
       </div>
     </div>
   );
